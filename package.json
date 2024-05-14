@@ -1,0 +1,51 @@
+{
+  "name": "@libresign/vue-pdf-editor",
+  "description": "vue2 pdf editor component",
+  "version": "1.2.7",
+  "author": "LibreCode",
+  "private": false,
+  "main": "dist/vue-pdf-editor.umd.js",
+  "keywords": [
+    "pdf",
+    "pdf editor",
+    "editor"
+  ],
+  "scripts": {
+    "start": "vue-cli-service serve --port 8081",
+    "build": "vue-cli-service build",
+    "build:lib": "vue-cli-service build --target lib --name vue-pdf-editor src/main.js",
+    "lint": "vue-cli-service lint --no-fix",
+    "lint:fix": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@cantoo/pdf-lib": "^1.20.2",
+    "blob-stream-i2d": "^1.0.0",
+    "core-js": "^3.35.1",
+    "downloadjs": "^1.4.7",
+    "pdfjs-dist": "^3.11.174",
+    "pdfkit": "^0.15.0",
+    "vue-material-design-icons": "^5.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.7",
+    "@babel/eslint-parser": "^7.23.3",
+    "@babel/plugin-transform-private-methods": "^7.23.3",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-service": "~5.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.22.0",
+    "postcss": "^8.4.33",
+    "postcss-load-config": "^5.0.3",
+    "tailwindcss": "^3.4.1",
+    "terser-webpack-plugin": "^5.3.10",
+    "vue": "^2.7.16",
+    "vue-template-compiler": "^2.7.16"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "license": "MIT"
+}
