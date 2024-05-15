@@ -59,6 +59,7 @@ export default {
 				"",
 				`${window.location.pathname}?${params}`
 			);
+			window.parent.postMessage({ type: "setCoordinate", coordinate }, "*");
 		},
 		save2Upload(payload) {
 			console.log(payload.pdfBytes);
