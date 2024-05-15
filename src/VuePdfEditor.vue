@@ -17,13 +17,13 @@
 			>
 				<button
 					v-if="showSaveBtn"
-					class="flex bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
+					class="flex bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
 					:class="[
 						pages.length === 0 ||
 						saving ||
 						!pdfFile ||
 						(coordinate && coordinate.page == selectedPageIndex)
-							? 'cursor-not-allowed bg-gray-700 hover:bg-gray-700'
+							? 'cursor-not-allowed !bg-gray-700 !hover:bg-gray-700'
 							: '',
 					]"
 					:disabled="coordinate && coordinate.page == selectedPageIndex"
@@ -48,7 +48,7 @@
 				/>
 				<label
 					v-if="showChooseFileBtn"
-					class="whitespace-no-wrap bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 md:px-4 rounded mr-3 cursor-pointer md:mr-4"
+					class="whitespace-no-wrap bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 rounded mr-3 cursor-pointer md:mr-4"
 					:class="hideToolbar ? 'hidden' : ''"
 					for="pdf"
 				>
@@ -56,14 +56,14 @@
 				</label>
 				<button
 					v-show="narrowEnlargeShow"
-					class="w-7 h-7 bg-blue-500 hover:bg-blue-700 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
+					class="w-7 h-7 bg-emerald-700 hover:bg-emerald-900 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
 					@click="narrow"
 				>
 					-
 				</button>
 				<button
 					v-show="narrowEnlargeShow"
-					class="w-7 h-7 bg-blue-500 hover:bg-blue-700 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
+					class="w-7 h-7 bg-emerald-700 hover:bg-emerald-900 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
 					@click="enlarge"
 				>
 					+
@@ -130,10 +130,10 @@
 				</div>
 				<button
 					v-if="showSaveBtn"
-					class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
+					class="bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
 					:class="[
 						pages.length === 0 || saving || !pdfFile
-							? 'cursor-not-allowed bg-blue-700'
+							? 'cursor-not-allowed !bg-gray-700 !hover:bg-gray-700'
 							: '',
 					]"
 					@click="savePDF"
@@ -880,7 +880,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .shadowOutline {
-	box-shadow: 0 0 0 3px rgb(66 153 225 / 50%);
+  box-shadow: 0 0 0 3px rgb(16, 185, 129, 0.5);
 }
 
 .noTouchAction {
