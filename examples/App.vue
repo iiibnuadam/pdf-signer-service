@@ -53,11 +53,11 @@ export default {
 	methods: {
 		setCoodinate(coordinate) {
 			window.parent.postMessage(
-				{ type: "coordinate", coordinate: coordinate.coordinate },
-				"*"
-			);
-			window.parent.postMessage(
-				{ type: "metadata", metadata: coordinate.metadata },
+				{
+					type: "coordinate",
+					coordinate: coordinate.coordinate,
+					metadata: coordinate.metadata,
+				},
 				"*"
 			);
 		},
