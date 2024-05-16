@@ -61,3 +61,13 @@ export function readAsDataURL(file) {
 export async function readAsPDF(file) {
   return getDocument(file).promise
 }
+
+
+export async function extractMetadata(url) {
+  const pdf = await getDocument(url).promise
+  const metadata = await pdf.getMetadata()
+  return {
+    ...metadata,
+    metadata: metadata.metadata.getAll(),
+  }
+}

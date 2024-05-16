@@ -52,14 +52,14 @@ export default {
 	},
 	methods: {
 		setCoodinate(coordinate) {
-			const params = new URLSearchParams(window.location.search);
-			params.set("coordinate", JSON.stringify(coordinate));
-			window.history.replaceState(
-				{},
-				"",
-				`${window.location.pathname}?${params}`
+			window.parent.postMessage(
+				{ type: "coordinate", coordinate: coordinate.coordinate },
+				"*"
 			);
-			window.parent.postMessage({ type: "setCoordinate", coordinate }, "*");
+			window.parent.postMessage(
+				{ type: "metadata", metadata: coordinate.metadata },
+				"*"
+			);
 		},
 		save2Upload(payload) {
 			console.log(payload.pdfBytes);

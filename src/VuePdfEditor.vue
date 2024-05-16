@@ -288,7 +288,12 @@ import ImageItem from "./Components/Image.vue";
 import TextItem from "./Components/TextItem.vue";
 import Drawing from "./Components/Drawing.vue";
 import DrawingCanvas from "./Components/DrawingCanvas.vue";
-import { readAsImage, readAsPDF, readAsDataURL } from "./utils/asyncReader.js";
+import {
+	readAsImage,
+	readAsPDF,
+	readAsDataURL,
+	extractMetadata,
+} from "./utils/asyncReader.js";
 import { save } from "./utils/PDF.js";
 import ImageIcon from "vue-material-design-icons/Image.vue";
 import TextIcon from "vue-material-design-icons/Text.vue";
@@ -437,11 +442,12 @@ export default {
 			saving: false,
 			addingDrawing: false,
 			coordinate: null,
+			metadata: null,
 		};
 	},
 	watch: {
 		coordinate(val) {
-			this.$emit("setCoodinate", val);
+			this.$emit("setCoodinate", { coordinate: val, metadata: this.metadata });
 		},
 	},
 	async mounted() {
@@ -488,6 +494,7 @@ export default {
 				this.narrowEnlargeShow = true;
 				this.initTextField();
 				this.initImages();
+				this.metadata = await extractMetadata(this.initFileSrc);
 			} catch (e) {
 				console.log(e);
 			}
@@ -880,7 +887,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .shadowOutline {
-  box-shadow: 0 0 0 3px rgb(16, 185, 129, 0.5);
+	box-shadow: 0 0 0 3px rgb(16, 185, 129, 0.5);
 }
 
 .noTouchAction {
