@@ -448,6 +448,7 @@ export default {
 			addingDrawing: false,
 			coordinate: null,
 			metadata: null,
+			isFirstLoad: true,
 		};
 	},
 	watch: {
@@ -506,8 +507,9 @@ export default {
 				fetchFont(this.currentFont);
 				this.narrowEnlargeShow = true;
 				this.initTextField();
-				this.initImages();
+				await this.initImages();
 				this.metadata = await extractMetadata(this.initFileSrc);
+				this.isFirstLoad = false;
 			} catch (e) {
 				console.log(e);
 			}
@@ -894,11 +896,9 @@ export default {
 			if (this.coordinate) {
 				this.allObjects = this.allObjects.map(() => []);
 			}
-			this.addImage(
-				this.initImageUrls[0],
-				this.coordinate?.x,
-				this.coordinate?.y
-			);
+			if (!this.isFirstLoad) {
+				this.addImage(this.initImageUrls[0]);
+			}
 		},
 	},
 };
