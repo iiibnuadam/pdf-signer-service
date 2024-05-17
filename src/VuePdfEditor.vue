@@ -33,6 +33,18 @@
 					{{ coordinate ? "Pindahkan" : "Letakan" }}
 				</button>
 				<input
+					ref="currentPage"
+					v-model="currentPage"
+					type="text"
+					:min="1"
+					:max="pages.length"
+					class="!appearance-none w-10 h-7 text-center text-black font-bold rounded mr-2 focus:outline-none focus:ring focus:border-emerald-300"
+					@blur="onBlurCurrentPage"
+					@keypress="onKeyPressCurrentPage"
+					@keydown.enter="onBlurCurrentPage"
+				/>
+				<span class="mr-3 md:mr-4 font-bold">/ {{ pages.length }}</span>
+				<input
 					id="pdf"
 					type="file"
 					name="pdf"
@@ -61,13 +73,7 @@
 				>
 					-
 				</button>
-				<input
-					ref="currentPage"
-					v-model="currentPage"
-					type="number"
-					:min="1"
-					class="w-12 h-7 text-center text-black font-bold rounded mr-3 md:mr-4"
-				/>
+				<div class="font-bold mr3 md:mr-4">{{ Math.round(scale * 100) }}%</div>
 				<button
 					v-show="narrowEnlargeShow"
 					class="w-7 h-7 bg-emerald-700 hover:bg-emerald-900 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
@@ -190,6 +196,7 @@
 						v-for="(page, pIndex) in pages"
 						:key="pIndex"
 						style="display: inline-block"
+						:id="`page${pIndex}`"
 					>
 						<div class="p-5 items-center" style="text-align: center">
 							<div
@@ -459,9 +466,6 @@ export default {
 			this.selectPage(val);
 			this.addSign();
 			this.currentPage = val + 1;
-		},
-		currentPage(val) {
-			if (val) this.selectedPageIndex = val - 1;
 		},
 	},
 	async mounted() {
@@ -899,6 +903,47 @@ export default {
 			if (!this.isFirstLoad) {
 				this.addImage(this.initImageUrls[0]);
 			}
+		},
+
+		scrollToPage(index) {
+			// Accessing the scroll box reference
+			const scrollbox = this.$refs.scrollBox;
+			// Finding the target page element by its id
+			const targetPage = document.getElementById(`page${index}`);
+			if (targetPage) {
+				// Scroll to the top position of the target page
+				scrollbox.scrollTop = targetPage.offsetTop - 50;
+			}
+		},
+
+		onKeyPressCurrentPage(event) {
+			// Allow only numeric keys
+			const charCode = event.charCode;
+
+			if (charCode < 48 || charCode > 57) {
+				event.preventDefault();
+			}
+		},
+
+		onBlurCurrentPage() {
+			// Handle empty string case on blur
+			if (this.currentPage === "") {
+				this.currentPage = 1;
+				return;
+			}
+
+			// Convert to a number and ensure the currentPage is within the valid range
+			let value = Number(this.currentPage);
+
+			if (isNaN(value) || value < 1) {
+				value = 1;
+			} else if (value > this.pages.length) {
+				value = this.pages.length;
+			}
+
+			this.currentPage = value;
+			this.selectedPageIndex = value - 1;
+			this.scrollToPage(value - 1);
 		},
 	},
 };
