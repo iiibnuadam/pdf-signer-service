@@ -2,7 +2,7 @@
 .github/
 .idea/
 .vscode/
-examples/
+home/
 node_modules/
 public/
 .editorconfig

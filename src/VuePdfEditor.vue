@@ -61,6 +61,13 @@
 				>
 					-
 				</button>
+				<input
+					ref="currentPage"
+					v-model="currentPage"
+					type="number"
+					:min="1"
+					class="w-12 h-7 text-center text-black font-bold rounded mr-3 md:mr-4"
+				/>
 				<button
 					v-show="narrowEnlargeShow"
 					class="w-7 h-7 bg-emerald-700 hover:bg-emerald-900 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
@@ -184,16 +191,13 @@
 						:key="pIndex"
 						style="display: inline-block"
 					>
-						<div
-							class="p-5 items-center"
-							style="text-align: center"
-							@mousedown="selectPage(pIndex)"
-							@touchstart="selectPage(pIndex)"
-						>
+						<div class="p-5 items-center" style="text-align: center">
 							<div
 								style="display: inline-block"
 								class="relative shadow-lg"
 								:class="[pIndex === selectedPageIndex ? 'shadowOutline' : '']"
+								@mousedown="selectPage(pIndex)"
+								@touchstart="selectPage(pIndex)"
 							>
 								<PDFPage
 									:ref="`page${pIndex}`"
@@ -439,6 +443,7 @@ export default {
 			currentFont: "Courier",
 			focusId: null,
 			selectedPageIndex: -1,
+			currentPage: 1,
 			saving: false,
 			addingDrawing: false,
 			coordinate: null,
@@ -448,6 +453,14 @@ export default {
 	watch: {
 		coordinate(val) {
 			this.$emit("setCoodinate", { coordinate: val, metadata: this.metadata });
+		},
+		selectedPageIndex(val) {
+			this.selectPage(val);
+			this.addSign();
+			this.currentPage = val + 1;
+		},
+		currentPage(val) {
+			if (val) this.selectedPageIndex = val - 1;
 		},
 	},
 	async mounted() {
@@ -796,8 +809,11 @@ export default {
 				(payload.currentPage !== undefined
 					? payload.currentPage
 					: this.selectedPageIndex)
-					? objects.map((object) =>
-							object.id === objectId ? { ...object, ...payload } : object)
+					? objects.map(
+							(object) =>
+								object.id === objectId ? { ...object, ...payload } : object
+							// eslint-disable-next-line no-mixed-spaces-and-tabs
+					  )
 					: objects
 			);
 			const object =
@@ -878,7 +894,11 @@ export default {
 			if (this.coordinate) {
 				this.allObjects = this.allObjects.map(() => []);
 			}
-			this.addImage(this.initImageUrls[0]);
+			this.addImage(
+				this.initImageUrls[0],
+				this.coordinate?.x,
+				this.coordinate?.y
+			);
 		},
 	},
 };
