@@ -29,8 +29,10 @@
 					:disabled="coordinate && coordinate.page == selectedPageIndex"
 					@click="addSign"
 				>
-					<GestureIcon :size="20" class="mr-2" />
-					{{ coordinate ? "Pindahkan" : "Letakan" }}
+					<GestureIcon :size="20" class="mr-0 md:mr-2" />
+					<span class="hidden md:block">
+						{{ coordinate ? "Pindahkan" : "Letakan" }}
+					</span>
 				</button>
 				<input
 					ref="currentPage"
@@ -73,7 +75,7 @@
 				>
 					-
 				</button>
-				<div class="font-bold mr3 md:mr-4">{{ Math.round(scale * 100) }}%</div>
+				<div class="font-bold mr-3 md:mr-4">{{ Math.round(scale * 100) }}%</div>
 				<button
 					v-show="narrowEnlargeShow"
 					class="w-7 h-7 bg-emerald-700 hover:bg-emerald-900 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
@@ -143,7 +145,7 @@
 				</div>
 				<button
 					v-if="showSaveBtn"
-					class="bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
+					class="flex bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
 					:class="[
 						pages.length === 0 || saving || !pdfFile
 							? 'cursor-not-allowed !bg-gray-700 !hover:bg-gray-700'
@@ -151,7 +153,8 @@
 					]"
 					@click="savePDF"
 				>
-					Download
+					<DownloadIcon :size="20" class="mr-0 md:mr-2" />
+					<span class="hidden md:block">Download</span>
 				</button>
 			</div>
 			<div v-if="addingDrawing">
@@ -166,30 +169,6 @@
 				</div>
 			</div>
 			<div v-if="pages.length" id="pdfBody" ref="pdfBody" class="w-full">
-				<div
-					v-if="showRename"
-					class="flex justify-center px-5 pt-5 w-full md:hidden"
-					:class="hideToolbar ? 'hidden' : ''"
-				>
-					<div class="flex items-center">
-						<PencilIcon
-							:size="20"
-							class="mr-2"
-							title="a pen, edit pdf name"
-							@click="renamePDF($refs.renamePDFInputOne)"
-						/>
-						<input
-							ref="renamePDFInputTwo"
-							v-model="pdfName"
-							style="text-align: center"
-							title="Rename PDF here"
-							placeholder="Rename PDF here"
-							type="text"
-							class="flex-grow bg-transparent justify-center"
-						/>
-					</div>
-				</div>
-
 				<!--  PDF main body      -->
 				<div class="w-full" style="text-align: center">
 					<div
@@ -310,6 +289,7 @@ import ImageIcon from "vue-material-design-icons/Image.vue";
 import TextIcon from "vue-material-design-icons/Text.vue";
 import GestureIcon from "vue-material-design-icons/Gesture.vue";
 import PencilIcon from "vue-material-design-icons/Pencil.vue";
+import DownloadIcon from "vue-material-design-icons/Download.vue";
 
 export default {
 	name: "VuePdfEditor",
@@ -322,6 +302,7 @@ export default {
 		ImageIcon,
 		TextIcon,
 		GestureIcon,
+		DownloadIcon,
 		PencilIcon,
 	},
 	props: {
