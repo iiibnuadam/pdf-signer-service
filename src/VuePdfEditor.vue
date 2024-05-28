@@ -16,7 +16,7 @@
 				class="z-10 top-0 left-0 right-0 z-10 h-12 flex justify-center items-center bg-gray-200 border-b border-gray-300"
 			>
 				<button
-					v-if="showSaveBtn"
+					v-if="hideToolbar"
 					class="flex bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
 					:class="[
 						pages.length === 0 ||
@@ -34,6 +34,15 @@
 						{{ coordinate ? "Pindahkan" : "Letakan" }}
 					</span>
 				</button>
+				<label
+					v-if="showChooseFileBtn"
+					class="flex whitespace-no-wrap bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 rounded mr-3 cursor-pointer md:mr-4"
+					:class="hideToolbar ? 'hidden' : ''"
+					for="pdf"
+				>
+					<FileUploadIcon :size="20" class="mr-0 md:mr-2" />
+					<span class="hidden md:block"> Pilih PDF </span>
+				</label>
 				<input
 					ref="currentPage"
 					v-model="currentPage"
@@ -59,15 +68,8 @@
 					name="image"
 					class="hidden"
 					@change="onUploadImage"
+					:disabled="pages.length === 0"
 				/>
-				<label
-					v-if="showChooseFileBtn"
-					class="whitespace-no-wrap bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 rounded mr-3 cursor-pointer md:mr-4"
-					:class="hideToolbar ? 'hidden' : ''"
-					for="pdf"
-				>
-					Select PDF
-				</label>
 				<button
 					v-show="narrowEnlargeShow"
 					class="w-7 h-7 bg-emerald-700 hover:bg-emerald-900 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
@@ -125,7 +127,7 @@
 				</div>
 				<div
 					v-if="showRename"
-					class="justify-center mr-3 md:mr-4 w-full max-w-xs hidden md:flex"
+					class="justify-center mr-3 md:mr-4 w-full max-w-xs hidden lg:flex"
 					:class="hideToolbar ? '!hidden' : ''"
 				>
 					<PencilIcon
@@ -140,7 +142,7 @@
 						title="Rename PDF here"
 						placeholder="Rename PDF here"
 						type="text"
-						class="flex-grow bg-transparent"
+						class="flex-grow bg-transparent focus:outline-none focus:ring focus:border-emerald-300"
 					/>
 				</div>
 				<button
@@ -150,6 +152,7 @@
 						pages.length === 0 || saving || !pdfFile
 							? 'cursor-not-allowed !bg-gray-700 !hover:bg-gray-700'
 							: '',
+						!hideToolbar ? '!hidden md:!flex' : '',
 					]"
 					@click="savePDF"
 				>
@@ -198,6 +201,44 @@
 			>
 				<!--  PDF main body      -->
 				<div class="w-full" style="text-align: center">
+					<div
+						v-if="showRename"
+						class="justify-center w-full flex lg:hidden mt-5"
+						:class="hideToolbar ? '!hidden' : ''"
+					>
+						<div
+							class="justify-center items-center w-full max-w-xs flex lg:hidden"
+						>
+							<PencilIcon
+								:size="20"
+								class="mr-2"
+								title="a pen, edit pdf name"
+								@click="renamePDF($refs.renamePDFInputTwo)"
+							/>
+							<input
+								ref="renamePDFInputTwo"
+								v-model="pdfName"
+								title="Rename PDF here"
+								placeholder="Rename PDF here"
+								type="text"
+								class="flex-grow h-8 px-2 bg-emerald-700 text-white font-semibold rounded-md focus:outline-none focus:ring focus:border-emerald-300"
+							/>
+							<button
+								v-if="showSaveBtn"
+								class="md:hidden flex bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 ml-3 rounded"
+								:class="[
+									pages.length === 0 || saving || !pdfFile
+										? 'cursor-not-allowed !bg-gray-700 !hover:bg-gray-700'
+										: '',
+								]"
+								@click="savePDF"
+							>
+								<DownloadIcon :size="20" class="mr-0 md:mr-2" />
+								<span class="hidden md:block">Download</span>
+							</button>
+						</div>
+					</div>
+
 					<div
 						v-for="(page, pIndex) in pages"
 						:key="pIndex"
@@ -317,6 +358,7 @@ import TextIcon from "vue-material-design-icons/Text.vue";
 import GestureIcon from "vue-material-design-icons/Gesture.vue";
 import PencilIcon from "vue-material-design-icons/Pencil.vue";
 import DownloadIcon from "vue-material-design-icons/Download.vue";
+import FileUploadIcon from "vue-material-design-icons/FileUpload.vue";
 
 export default {
 	name: "VuePdfEditor",
@@ -331,6 +373,7 @@ export default {
 		GestureIcon,
 		DownloadIcon,
 		PencilIcon,
+		FileUploadIcon,
 	},
 	props: {
 		msg: String,
@@ -426,10 +469,6 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-		everyPageSeal: {
-			type: Boolean,
-			default: true,
-		},
 		initialHeightImage: {
 			type: Number,
 			default: 0,
@@ -472,6 +511,9 @@ export default {
 			this.$emit("setCoodinate", { coordinate: val, metadata: this.metadata });
 		},
 		selectedPageIndex(val) {
+			if (!this.hideToolbar) {
+				return;
+			}
 			this.selectPage(val);
 			this.addSign();
 			this.currentPage = val + 1;
@@ -566,47 +608,25 @@ export default {
 			if (this.selectedPageIndex < 0) {
 				return;
 			}
-			if (this.everyPageSeal) {
-				for (let i = 0; i < this.pages.length; i++) {
-					this.selectedPageIndex = i;
-					let y = 0;
-					if (this.initImageUrls !== null && this.initImageUrls.length !== 0) {
-						// Need to initialize pictures
-						for (let j = 0; j < this.initImageUrls.length; j++) {
-							if (this.initTextFields.length === 0) {
-								y = j * 100;
-							} else {
-								y = (j - 1 + this.initTextFields.length) * 100;
-							}
-							await this.addImage(this.initImageUrls[j], 0, y, 1);
-						}
+			this.selectedPageIndex = 0;
+			let y = 0;
+			if (this.initImageUrls !== null && this.initImageUrls.length !== 0) {
+				// Need to initialize pictures
+				for (let j = 0; j < this.initImageUrls.length; j++) {
+					if (this.initTextFields.length === 0) {
+						y = j * 100;
+					} else {
+						y = (j - 1 + this.initTextFields.length) * 100;
 					}
-					if (this.sealImageShow) {
-						// Example of display seal
-						const res = await fetch(this.sealImageUrl);
-						await this.addImage(await res.blob(), 0, (y + 1) * 100, 0.4, true);
-					}
-				}
-			} else {
-				this.selectedPageIndex = 0;
-				let y = 0;
-				if (this.initImageUrls !== null && this.initImageUrls.length !== 0) {
-					// Need to initialize pictures
-					for (let j = 0; j < this.initImageUrls.length; j++) {
-						if (this.initTextFields.length === 0) {
-							y = j * 100;
-						} else {
-							y = (j - 1 + this.initTextFields.length) * 100;
-						}
-						await this.addImage(this.initImageUrls[j], 0, y, 1);
-					}
-				}
-				if (this.sealImageShow) {
-					// Example of display seal
-					const res = await fetch(this.sealImageUrl);
-					await this.addImage(await res.blob(), 0, (y + 1) * 100, 0.4, true);
+					await this.addImage(this.initImageUrls[j], 0, y, 1);
 				}
 			}
+			if (this.sealImageShow) {
+				// Example of display seal
+				const res = await fetch(this.sealImageUrl);
+				await this.addImage(await res.blob(), 0, (y + 1) * 100, 0.4, true);
+			}
+
 			this.selectedPageIndex = 0;
 		},
 		onFinishDrawingCanvas(e) {

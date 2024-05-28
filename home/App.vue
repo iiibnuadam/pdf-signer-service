@@ -4,7 +4,7 @@
 			ref="vuePdfEditor"
 			width="100%"
 			height="100%"
-			:hide-toolbar="true"
+			:hide-toolbar="limitedAccess"
 			:show-choose-file-btn="true"
 			:show-customize-editor="true"
 			:show-customize-editor-add-text="true"
@@ -23,7 +23,6 @@
 			:save-to-upload="false"
 			:seal-image-show="false"
 			:seal-image-hidden-on-save="false"
-			:every-page-seal="false"
 			:initial-height-image="200"
 			:initial-width-image="200"
 			@onSave2Upload="save2Upload"
@@ -41,6 +40,10 @@ export default {
 		this.imageUrls = params.get("signature") ? [params.get("signature")] : [];
 		this.initFile = params.get("file") || "";
 		this.initFileName = params.get("fileName") || "";
+
+		params.get("access") === "full"
+			? (this.limitedAccess = false)
+			: (this.limitedAccess = true);
 	},
 	data() {
 		return {
@@ -48,6 +51,7 @@ export default {
 			initFile: "",
 			textFields: [],
 			imageUrls: [],
+			limitedAccess: true,
 		};
 	},
 	methods: {
