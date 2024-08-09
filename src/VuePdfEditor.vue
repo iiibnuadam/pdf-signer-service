@@ -6,159 +6,223 @@
 		<div
 			ref="scrollBox"
 			style="width: 100%; height: 100%; overflow: auto"
-			class="flex-col py-12 items-center bg-gray-100"
+			class="flex-col items-center bg-[#A3A3A3] pb-10"
+			:class="pdfName ? 'pt-12' : 'pt-12'"
 			@wheel.ctrl="wheelZoom"
 			@wheel.meta="wheelZoom"
 		>
 			<div
 				v-if="showChooseFileBtn || showCustomizeEditor || showSaveBtn"
 				style="position: fixed"
-				class="z-10 top-0 left-0 right-0 z-10 h-12 flex justify-center items-center bg-gray-200 border-b border-gray-300"
+				class="z-10 top-0 left-0 right-0 z-10 flex flex-col items-center w-full bg-[#F7F7F7] border-b border-gray-300"
 			>
-				<button
-					v-if="hideToolbar"
-					class="flex bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
-					:class="[
-						pages.length === 0 ||
-						saving ||
-						!pdfFile ||
-						(coordinate && coordinate.page == selectedPageIndex)
-							? 'cursor-not-allowed !bg-gray-700 !hover:bg-gray-700'
-							: '',
-					]"
-					:disabled="coordinate && coordinate.page == selectedPageIndex"
-					@click="addSign"
+				<!-- <div
+					v-if="pdfName"
+					class="w-full text-center h-8 flex justify-center items-center"
 				>
-					<GestureIcon :size="20" class="mr-0 md:mr-2" />
-					<span class="hidden md:block">
-						{{ coordinate ? "Pindahkan" : "Letakan" }}
-					</span>
-				</button>
-				<label
-					v-if="showChooseFileBtn"
-					class="flex whitespace-no-wrap bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 rounded mr-3 cursor-pointer md:mr-4"
-					:class="hideToolbar ? 'hidden' : ''"
-					for="pdf"
-				>
-					<FileUploadIcon :size="20" class="mr-0 md:mr-2" />
-					<span class="hidden md:block"> Pilih PDF </span>
-				</label>
-				<input
-					ref="currentPage"
-					v-model="currentPage"
-					type="text"
-					:min="1"
-					:max="pages.length"
-					class="!appearance-none w-10 h-7 text-center text-black font-bold rounded mr-2 focus:outline-none focus:ring focus:border-emerald-300"
-					@blur="onBlurCurrentPage"
-					@keypress="onKeyPressCurrentPage"
-					@keydown.enter="onBlurCurrentPage"
-				/>
-				<span class="mr-3 md:mr-4 font-bold">/ {{ pages.length }}</span>
-				<input
-					id="pdf"
-					type="file"
-					name="pdf"
-					class="hidden"
-					@change="onUploadPDF"
-				/>
-				<input
-					id="image"
-					type="file"
-					name="image"
-					class="hidden"
-					@change="onUploadImage"
-					:disabled="pages.length === 0"
-				/>
-				<button
-					v-show="narrowEnlargeShow"
-					class="w-7 h-7 bg-emerald-700 hover:bg-emerald-900 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
-					@click="narrow"
-				>
-					-
-				</button>
-				<div class="font-bold mr-3 md:mr-4">{{ Math.round(scale * 100) }}%</div>
-				<button
-					v-show="narrowEnlargeShow"
-					class="w-7 h-7 bg-emerald-700 hover:bg-emerald-900 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
-					@click="enlarge"
-				>
-					+
-				</button>
-				<div
-					v-if="showCustomizeEditor"
-					class="relative mr-3 flex h-8 bg-gray-400 rounded-sm overflow-hidden md:mr-4"
-					:class="hideToolbar ? 'hidden' : ''"
-				>
-					<label
-						v-if="showCustomizeEditorAddImg"
-						title="add pictures"
-						class="flex items-center justify-center h-full w-8 hover:bg-gray-500 cursor-pointer"
-						for="image"
-						:class="[
-							selectedPageIndex < 0 ? 'cursor-not-allowed bg-gray-500' : '',
-						]"
+					{{ `${pdfName}.pdf` }}
+				</div> -->
+				<div class="flex justify-between items-center h-12 w-full">
+					<button
+						class="flex border border-[#156E5C] hover:bg-slate-100 text-[#156E5C] font-bold p-2 ml-3 md:ml-4 rounded"
+						@click="toggleSidebar = !toggleSidebar"
 					>
-						<ImageIcon :size="20" title="An icon for adding images" />
-					</label>
-					<label
-						v-if="showCustomizeEditorAddText"
-						title="Add text"
-						class="flex items-center justify-center h-full w-8 hover:bg-gray-500 cursor-pointer"
-						for="text"
-						:class="[
-							selectedPageIndex < 0 ? 'cursor-not-allowed bg-gray-500' : '',
-						]"
-						@click="onAddTextField"
-					>
-						<TextIcon :size="20" title="An icon for adding text" />
-					</label>
-					<label
-						v-if="showCustomizeEditorAddDraw"
-						title="Add a handwriting"
-						class="flex items-center justify-center h-full w-8 hover:bg-gray-500 cursor-pointer"
-						:class="[
-							selectedPageIndex < 0 ? 'cursor-not-allowed bg-gray-500' : '',
-						]"
-						@click="onAddDrawing"
-					>
-						<GestureIcon :size="20" title="An icon for adding drawing" />
-					</label>
+						<MenuIcon :size="16" />
+					</button>
+					<div class="flex justify-center items-center mx-3 md:mx-4">
+						<!-- <button
+							v-if="hideToolbar"
+							v-show="!coordinate"
+							class="flex border border-black hover:bg-slate-200 text-black text-sm font-thin py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
+							:class="[
+								pages.length === 0 ||
+								saving ||
+								!pdfFile ||
+								(coordinate && coordinate.page == selectedPageIndex)
+									? 'cursor-not-allowed !bg-slate-200 !hover:!bg-slate-200'
+									: '',
+							]"
+							:disabled="coordinate && coordinate.page == selectedPageIndex"
+							@click="addSign"
+						>
+							<GestureIcon :size="16" class="mr-0 md:mr-2" />
+							<span class="hidden md:block">
+								{{ coordinate ? "Pindahkan" : "Letakan" }}
+							</span>
+						</button> -->
+						<label
+							v-if="showChooseFileBtn"
+							class="flex whitespace-no-wrap bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 rounded mr-3 cursor-pointer md:mr-4"
+							:class="hideToolbar ? 'hidden' : ''"
+							for="pdf"
+						>
+							<FileUploadIcon :size="16" class="mr-0 md:mr-2" />
+							<span class="hidden md:block"> Pilih PDF </span>
+						</label>
+						<input
+							ref="currentPage"
+							v-model="currentPage"
+							type="text"
+							:min="1"
+							:max="pages.length"
+							class="!appearance-none w-10 h-7 text-sm text-center text-black font-thin rounded focus:outline-none focus:ring focus:border-emerald-300"
+							@blur="onBlurCurrentPage"
+							@keypress="onKeyPressCurrentPage"
+							@keydown.enter="onBlurCurrentPage"
+						/>
+						<span class="text-center text-sm font-thin mx-2">dari</span>
+						<div
+							class="bg-[#E8E8E8] text-sm w-10 h-7 text-center text-black font-thin rounded flex items-center justify-center"
+						>
+							{{ pages.length }}
+						</div>
+						<input
+							id="pdf"
+							type="file"
+							name="pdf"
+							class="hidden"
+							@change="onUploadPDF"
+						/>
+						<input
+							id="image"
+							type="file"
+							name="image"
+							class="hidden"
+							@change="onUploadImage"
+							:disabled="pages.length === 0"
+						/>
+						<template v-if="narrowEnlargeShow">
+							<button
+								class="w-7 h-7 bg-emerald-700 hover:bg-emerald-900 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
+								@click="narrow"
+							>
+								-
+							</button>
+							<div class="font-thin text-sm mr-3 md:mr-4">
+								{{ Math.round(scale * 100) }}%
+							</div>
+							<button
+								class="w-7 h-7 bg-emerald-700 hover:bg-emerald-900 text-white font-bold flex items-center justify-center mr-3 md:mr-4 rounded-full"
+								@click="enlarge"
+							>
+								+
+							</button>
+						</template>
+						<div
+							v-if="showCustomizeEditor"
+							class="relative mr-3 flex h-8 bg-gray-400 rounded-sm overflow-hidden md:mr-4"
+							:class="hideToolbar ? 'hidden' : ''"
+						>
+							<label
+								v-if="showCustomizeEditorAddImg"
+								title="add pictures"
+								class="flex items-center justify-center h-full w-8 hover:bg-gray-500 cursor-pointer"
+								for="image"
+								:class="[
+									selectedPageIndex < 0 ? 'cursor-not-allowed bg-gray-500' : '',
+								]"
+							>
+								<ImageIcon :size="16" title="An icon for adding images" />
+							</label>
+							<label
+								v-if="showCustomizeEditorAddText"
+								title="Add text"
+								class="flex items-center justify-center h-full w-8 hover:bg-gray-500 cursor-pointer"
+								for="text"
+								:class="[
+									selectedPageIndex < 0 ? 'cursor-not-allowed bg-gray-500' : '',
+								]"
+								@click="onAddTextField"
+							>
+								<TextIcon :size="17" title="An icon for adding text" />
+							</label>
+							<label
+								v-if="showCustomizeEditorAddDraw"
+								title="Add a handwriting"
+								class="flex items-center justify-center h-full w-8 hover:bg-gray-500 cursor-pointer"
+								:class="[
+									selectedPageIndex < 0 ? 'cursor-not-allowed bg-gray-500' : '',
+								]"
+								@click="onAddDrawing"
+							>
+								<GestureIcon :size="16" title="An icon for adding drawing" />
+							</label>
+						</div>
+						<div
+							v-if="showRename"
+							class="justify-center mr-3 md:mr-4 w-full max-w-xs hidden lg:flex"
+							:class="hideToolbar ? '!hidden' : ''"
+						>
+							<PencilIcon
+								:size="16"
+								class="mr-2"
+								title="a pen, edit pdf name"
+								@click="renamePDF($refs.renamePDFInputOne)"
+							/>
+							<input
+								ref="renamePDFInputOne"
+								v-model="pdfName"
+								title="Rename PDF here"
+								placeholder="Rename PDF here"
+								type="text"
+								class="flex-grow bg-transparent focus:outline-none focus:ring focus:border-emerald-300"
+							/>
+						</div>
+					</div>
+					<div class="flex mr-3 md:mr-4 gap-3 md:gap-4 justify-end">
+						<button
+							v-if="showSaveBtn"
+							class="flex border border-[#156E5C] hover:bg-slate-100 text-[#156E5C] font-bold p-2 rounded"
+							:class="[
+								pages.length === 0 || saving || !pdfFile
+									? 'cursor-not-allowed !bg-slate-200 !hover:!bg-slate-200'
+									: '',
+								!hideToolbar ? '!hidden md:!flex' : '',
+							]"
+							@click="savePDF"
+						>
+							<DownloadIcon :size="16" />
+						</button>
+						<!-- <button
+							v-if="showSaveBtn"
+							class="flex border border-red-500 hover:bg-red-100 text-red-500 font-bold p-2 rounded"
+							:class="[
+								pages.length === 0 || saving || !pdfFile
+									? 'cursor-not-allowed !bg-slate-200 !hover:bg-slate-200'
+									: '',
+								!hideToolbar ? '!hidden md:!flex' : '',
+							]"
+						>
+							<DeleteIcon :size="16" />
+						</button> -->
+					</div>
 				</div>
-				<div
-					v-if="showRename"
-					class="justify-center mr-3 md:mr-4 w-full max-w-xs hidden lg:flex"
-					:class="hideToolbar ? '!hidden' : ''"
-				>
-					<PencilIcon
-						:size="20"
-						class="mr-2"
-						title="a pen, edit pdf name"
-						@click="renamePDF($refs.renamePDFInputOne)"
-					/>
-					<input
-						ref="renamePDFInputOne"
-						v-model="pdfName"
-						title="Rename PDF here"
-						placeholder="Rename PDF here"
-						type="text"
-						class="flex-grow bg-transparent focus:outline-none focus:ring focus:border-emerald-300"
-					/>
+			</div>
+			<!-- PDF Side Bar Here-->
+			<div
+				class="sidebar w-52 fixed z-10 top-[48px] left-0 bg-[#222222]"
+				v-if="toggleSidebar"
+			>
+				<div class="overflow-y-auto h-full">
+					<div v-for="(page, pIndex) in pages" :key="pIndex">
+						<div class="p-5 items-center" style="text-align: center">
+							<div
+								style="display: inline-block"
+								class="relative shadow-lg"
+								:class="[pIndex === selectedPageIndex ? 'shadowOutline' : '']"
+								@mousedown="selectPage(pIndex)"
+								@touchstart="selectPage(pIndex)"
+							>
+								<PDFPage
+									:ref="`page${pIndex}`"
+									:scale="0.2"
+									:data-key="pIndex"
+									:page="page"
+								/>
+							</div>
+						</div>
+					</div>
 				</div>
-				<button
-					v-if="showSaveBtn"
-					class="flex bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
-					:class="[
-						pages.length === 0 || saving || !pdfFile
-							? 'cursor-not-allowed !bg-gray-700 !hover:bg-gray-700'
-							: '',
-						!hideToolbar ? '!hidden md:!flex' : '',
-					]"
-					@click="savePDF"
-				>
-					<DownloadIcon :size="20" class="mr-0 md:mr-2" />
-					<span class="hidden md:block">Download</span>
-				</button>
 			</div>
 			<div v-if="addingDrawing">
 				<div
@@ -210,7 +274,7 @@
 							class="justify-center items-center w-full max-w-xs flex lg:hidden"
 						>
 							<PencilIcon
-								:size="20"
+								:size="16"
 								class="mr-2"
 								title="a pen, edit pdf name"
 								@click="renamePDF($refs.renamePDFInputTwo)"
@@ -228,13 +292,12 @@
 								class="md:hidden flex bg-emerald-700 hover:bg-emerald-900 text-white font-bold py-1 px-3 md:px-4 ml-3 rounded"
 								:class="[
 									pages.length === 0 || saving || !pdfFile
-										? 'cursor-not-allowed !bg-gray-700 !hover:bg-gray-700'
+										? 'cursor-not-allowed !bg-slate-200 !hover:!bg-slate-200'
 										: '',
 								]"
 								@click="savePDF"
 							>
-								<DownloadIcon :size="20" class="mr-0 md:mr-2" />
-								<span class="hidden md:block">Download</span>
+								<DownloadIcon :size="16" class="mr-0" />
 							</button>
 						</div>
 					</div>
@@ -292,6 +355,7 @@
 													:page-scale="pagesScale[pIndex]"
 													@onUpdate="updateObject(object.id, $event)"
 													@onDelete="deleteObject(object.id)"
+													no-delete
 												/>
 											</div>
 											<div v-else-if="object.type === 'text'">
@@ -357,8 +421,10 @@ import ImageIcon from "vue-material-design-icons/Image.vue";
 import TextIcon from "vue-material-design-icons/Text.vue";
 import GestureIcon from "vue-material-design-icons/Gesture.vue";
 import PencilIcon from "vue-material-design-icons/Pencil.vue";
-import DownloadIcon from "vue-material-design-icons/Download.vue";
+import DownloadIcon from "vue-material-design-icons/TrayArrowDown.vue";
 import FileUploadIcon from "vue-material-design-icons/FileUpload.vue";
+import MenuIcon from "vue-material-design-icons/Menu.vue";
+// import DeleteIcon from "vue-material-design-icons/DeleteOutline.vue";
 
 export default {
 	name: "VuePdfEditor",
@@ -374,6 +440,8 @@ export default {
 		DownloadIcon,
 		PencilIcon,
 		FileUploadIcon,
+		MenuIcon,
+		// DeleteIcon,
 	},
 	props: {
 		msg: String,
@@ -504,6 +572,7 @@ export default {
 			metadata: null,
 			isFirstLoad: true,
 			isLoading: false,
+			toggleSidebar: false,
 		};
 	},
 	watch: {
@@ -561,7 +630,7 @@ export default {
 				await this.addPDF(this.initFileSrc);
 				this.selectedPageIndex = 0;
 				fetchFont(this.currentFont);
-				this.narrowEnlargeShow = true;
+				// this.narrowEnlargeShow = true;
 				this.initTextField();
 				await this.initImages();
 				this.metadata = await extractMetadata(this.initFileSrc);
@@ -654,7 +723,7 @@ export default {
 			this.selectedPageIndex = -1;
 			try {
 				await this.addPDF(file);
-				this.narrowEnlargeShow = true;
+				// this.narrowEnlargeShow = true;
 				this.selectedPageIndex = 0;
 			} catch (e) {
 				console.log(e);
@@ -676,6 +745,7 @@ export default {
 				this.resetDefaultState();
 
 				this.pdfFile = file;
+				console.log(file);
 				if (this.initFileName) {
 					this.pdfName = this.initFileName;
 				} else if (file instanceof File && file.name) {
@@ -839,6 +909,7 @@ export default {
 
 		selectPage(index) {
 			this.selectedPageIndex = index;
+			this.scrollToPage(index);
 		},
 
 		updateObject(objectId, payload) {
@@ -1007,5 +1078,8 @@ li {
 
 a {
 	color: #42b983;
+}
+.sidebar {
+	height: calc(100vh - 48px);
 }
 </style>
