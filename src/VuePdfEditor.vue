@@ -932,7 +932,7 @@ export default {
 			if (this.coordinate) {
 				this.allObjects = this.allObjects.map(() => []);
 			}
-			if (!this.isFirstLoad) {
+			if (!this.isFirstLoad && this.initImageUrls.length) {
 				this.addImage(this.initImageUrls[0]);
 			}
 		},
