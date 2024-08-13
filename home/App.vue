@@ -59,16 +59,15 @@ export default {
 			window.parent.postMessage(
 				{
 					type: "coordinate",
+					page: coordinate.page,
 					coordinate: coordinate.coordinate,
 					metadata: coordinate.metadata,
 				},
 				"*"
 			);
 		},
-		save2Upload(payload) {
-			console.log(payload.pdfBytes);
-			console.log(payload.fileName);
-			console.log(payload.sealInfo);
+		save2Upload() {
+			// callback after save to upload
 		},
 	},
 };

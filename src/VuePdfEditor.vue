@@ -577,7 +577,11 @@ export default {
 	},
 	watch: {
 		coordinate(val) {
-			this.$emit("setCoodinate", { coordinate: val, metadata: this.metadata });
+			this.$emit("setCoodinate", {
+				coordinate: val,
+				page: this.selectedPageIndex + 1,
+				metadata: this.metadata,
+			});
 		},
 		selectedPageIndex(val) {
 			if (!this.hideToolbar) {
