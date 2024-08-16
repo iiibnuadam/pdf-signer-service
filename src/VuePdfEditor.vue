@@ -353,6 +353,8 @@
 													:origin-width="object.originWidth"
 													:origin-height="object.originHeight"
 													:page-scale="pagesScale[pIndex]"
+													:fixSize="readonly"
+													:readonly="readonly"
 													@onUpdate="updateObject(object.id, $event)"
 													@onDelete="deleteObject(object.id)"
 													no-delete
@@ -549,6 +551,22 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+		readonly: {
+			type: Boolean,
+			default: false,
+		},
+		x: {
+			type: Number,
+			default: 0,
+		},
+		y: {
+			type: Number,
+			default: 0,
+		},
+		initialPage: {
+			type: Number,
+			default: 1,
+		},
 	},
 	data() {
 		return {
@@ -632,13 +650,17 @@ export default {
 			try {
 				this.isLoading = true;
 				await this.addPDF(this.initFileSrc);
-				this.selectedPageIndex = 0;
+				this.selectedPageIndex = this.initialPage - 1;
 				fetchFont(this.currentFont);
 				// this.narrowEnlargeShow = true;
 				this.initTextField();
 				await this.initImages();
 				this.metadata = await extractMetadata(this.initFileSrc);
 				this.isFirstLoad = false;
+				this.currentPage = this.initialPage;
+				setTimeout(() => {
+					this.scrollToPage(this.initialPage - 1);
+				}, 10);
 			} catch (e) {
 				console.log(e);
 			} finally {
@@ -681,7 +703,7 @@ export default {
 			if (this.selectedPageIndex < 0) {
 				return;
 			}
-			this.selectedPageIndex = 0;
+			this.selectedPageIndex = this.initialPage - 1;
 			let y = 0;
 			if (this.initImageUrls !== null && this.initImageUrls.length !== 0) {
 				// Need to initialize pictures
@@ -700,7 +722,7 @@ export default {
 				await this.addImage(await res.blob(), 0, (y + 1) * 100, 0.4, true);
 			}
 
-			this.selectedPageIndex = 0;
+			this.selectedPageIndex = this.initialPage - 1;
 		},
 		onFinishDrawingCanvas(e) {
 			const { originWidth, originHeight, path } = e;
@@ -749,7 +771,6 @@ export default {
 				this.resetDefaultState();
 
 				this.pdfFile = file;
-				console.log(file);
 				if (this.initFileName) {
 					this.pdfName = this.initFileName;
 				} else if (file instanceof File && file.name) {
@@ -830,8 +851,8 @@ export default {
 					originHeight: height,
 					canvasWidth,
 					canvasHeight,
-					x,
-					y,
+					x: this.x || x,
+					y: this.y || y,
 					isSealImage,
 					payload: img,
 					file,
@@ -1004,10 +1025,10 @@ export default {
 		},
 
 		addSign() {
-			if (this.coordinate) {
+			if (this.coordinate && !this.readonly) {
 				this.allObjects = this.allObjects.map(() => []);
 			}
-			if (!this.isFirstLoad && this.initImageUrls.length) {
+			if (!this.isFirstLoad && this.initImageUrls.length && !this.readonly) {
 				this.addImage(this.initImageUrls[0]);
 			}
 		},

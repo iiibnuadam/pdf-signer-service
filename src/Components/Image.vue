@@ -71,7 +71,8 @@
 		</div>
 		<canvas
 			ref="imgCanvas"
-			class="w-full h-full border border-gray-400 border-dashed"
+			class="w-full h-full border-gray-400 border-dashed"
+			:class="readonly ? '' : 'border'"
 		/>
 	</div>
 </template>
@@ -98,6 +99,7 @@ export default {
 		"pageScale",
 		"fixSize",
 		"noDelete",
+		"readonly",
 	],
 	data() {
 		return {
@@ -217,6 +219,10 @@ export default {
 			this.operation = "";
 		},
 		handlePanStart(event) {
+			if (this.readonly) {
+				return;
+			}
+
 			let coordinate;
 			if (event.type === "mousedown") {
 				coordinate = this.handleMousedown(event);

@@ -23,8 +23,12 @@
 			:save-to-upload="false"
 			:seal-image-show="false"
 			:seal-image-hidden-on-save="false"
-			:initial-height-image="200"
-			:initial-width-image="200"
+			:initial-height-image="this.height"
+			:initial-width-image="this.width"
+			:readonly="readonly"
+			:initial-page="page"
+			:x="x"
+			:y="y"
 			@onSave2Upload="save2Upload"
 			@setCoodinate="setCoodinate"
 		>
@@ -40,6 +44,12 @@ export default {
 		this.imageUrls = params.get("signature") ? [params.get("signature")] : [];
 		this.initFile = params.get("file") || "";
 		this.initFileName = params.get("fileName") || "";
+		this.readonly = params.get("readonly") === "true";
+		this.page = params.get("page") ? Number(params.get("page")) : 1;
+		this.x = params.get("x") ? Number(params.get("x")) : 0;
+		this.y = params.get("y") ? Number(params.get("y")) : 0;
+		this.width = params.get("width") ? Number(params.get("width")) : 200;
+		this.height = params.get("height") ? Number(params.get("height")) : 200;
 
 		params.get("access") === "full"
 			? (this.limitedAccess = false)
@@ -52,6 +62,12 @@ export default {
 			textFields: [],
 			imageUrls: [],
 			limitedAccess: true,
+			readonly: false,
+			page: 1,
+			x: 0,
+			y: 0,
+			width: 0,
+			height: 0,
 		};
 	},
 	methods: {
