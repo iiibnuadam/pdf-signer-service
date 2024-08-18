@@ -72,11 +72,16 @@ export default {
 	},
 	methods: {
 		setCoodinate(coordinate) {
-			console.log(coordinate);
-			window.parent.postMessage(
+			window?.parent?.postMessage(
 				{
 					type: "coordinate",
-					coordinate: coordinate.coordinate,
+					coordinate: coordinate.coordinate.map(v => ({
+            x: v.x,
+            y: v.y,
+            page: v.page,
+            width: v.width,
+            height: v.height,
+          })),
 					metadata: coordinate.metadata,
 				},
 				"*"

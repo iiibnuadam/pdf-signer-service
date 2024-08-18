@@ -68,6 +68,6 @@ export async function extractMetadata(url) {
   const metadata = await pdf.getMetadata()
   return {
     ...metadata,
-    metadata: metadata.metadata.getAll(),
+    metadata: metadata?.metadata?.getAll(),
   }
 }

@@ -930,7 +930,6 @@ export default {
 			this.allObjects = this.allObjects.map((objects, pIndex) =>
 				pIndex === this.selectedPageIndex ? [...objects, object] : objects
 			);
-			console.log(object);
 			this.coordinate.push({
 				id: object.id,
 				x: object.x || 0,
