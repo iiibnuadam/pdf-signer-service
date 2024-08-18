@@ -72,10 +72,10 @@ export default {
 	},
 	methods: {
 		setCoodinate(coordinate) {
+			console.log(coordinate);
 			window.parent.postMessage(
 				{
 					type: "coordinate",
-					page: coordinate.page,
 					coordinate: coordinate.coordinate,
 					metadata: coordinate.metadata,
 				},

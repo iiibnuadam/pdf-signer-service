@@ -23,12 +23,26 @@
 					{{ `${pdfName}.pdf` }}
 				</div> -->
 				<div class="flex justify-between items-center h-12 w-full">
-					<button
-						class="flex border border-[#156E5C] hover:bg-slate-100 text-[#156E5C] font-bold p-2 ml-3 md:ml-4 rounded"
-						@click="toggleSidebar = !toggleSidebar"
-					>
-						<MenuIcon :size="16" />
-					</button>
+					<div class="flex gap-3 md:gap-4">
+						<button
+							class="flex border border-[#156E5C] hover:bg-slate-100 text-[#156E5C] font-bold p-2 ml-3 md:ml-4 rounded"
+							@click="toggleSidebar = !toggleSidebar"
+						>
+							<MenuIcon :size="16" />
+						</button>
+						<button
+							class="flex items-center border border-black hover:bg-slate-200 text-black text-sm font-thin py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
+							:class="[
+								pages.length === 0 || saving || !pdfFile
+									? 'cursor-not-allowed !bg-slate-200 !hover:!bg-slate-200'
+									: '',
+							]"
+							@click="addSign"
+						>
+							<GestureIcon :size="16" class="mr-0 md:mr-2" />
+							<span class="hidden md:block"> Bubuhkan </span>
+						</button>
+					</div>
 					<div class="flex justify-center items-center mx-3 md:mx-4">
 						<!-- <button
 							v-if="hideToolbar"
@@ -169,7 +183,9 @@
 							/>
 						</div>
 					</div>
-					<div class="flex mr-3 md:mr-4 gap-3 md:gap-4 justify-end">
+					<div
+						class="flex mr-3 md:mr-4 gap-3 md:gap-4 justify-end w-[96px] md:w-[185px]"
+					>
 						<button
 							v-if="showSaveBtn"
 							class="flex border border-[#156E5C] hover:bg-slate-100 text-[#156E5C] font-bold p-2 rounded"
@@ -357,7 +373,6 @@
 													:readonly="readonly"
 													@onUpdate="updateObject(object.id, $event)"
 													@onDelete="deleteObject(object.id)"
-													no-delete
 												/>
 											</div>
 											<div v-else-if="object.type === 'text'">
@@ -586,7 +601,7 @@ export default {
 			currentPage: 1,
 			saving: false,
 			addingDrawing: false,
-			coordinate: null,
+			coordinate: [],
 			metadata: null,
 			isFirstLoad: true,
 			isLoading: false,
@@ -597,7 +612,6 @@ export default {
 		coordinate(val) {
 			this.$emit("setCoodinate", {
 				coordinate: val,
-				page: this.selectedPageIndex + 1,
 				metadata: this.metadata,
 			});
 		},
@@ -606,7 +620,6 @@ export default {
 				return;
 			}
 			this.selectPage(val);
-			this.addSign();
 			this.currentPage = val + 1;
 		},
 	},
@@ -917,13 +930,15 @@ export default {
 			this.allObjects = this.allObjects.map((objects, pIndex) =>
 				pIndex === this.selectedPageIndex ? [...objects, object] : objects
 			);
-			this.coordinate = {
-				x: object.x,
-				y: object.y,
+			console.log(object);
+			this.coordinate.push({
+				id: object.id,
+				x: object.x || 0,
+				y: object.y || 0,
 				width: object.width,
 				height: object.height,
 				page: this.selectedPageIndex,
-			};
+			});
 		},
 
 		selectFontFamily(event) {
@@ -950,16 +965,21 @@ export default {
 					  )
 					: objects
 			);
-			const object =
-				this.allObjects.find((object) => object.length > 0)?.[0] || null;
+			// const object =
+			// 	this.allObjects.find((object) => object.length > 0)?.[0] || null;
 
-			this.coordinate = {
-				x: object.x,
-				y: object.y,
-				width: object.width,
-				height: object.height,
-				page: this.selectedPageIndex,
-			};
+			this.coordinate = this.coordinate.map((coordinate) =>
+				coordinate.id === objectId
+					? {
+							...coordinate,
+							x: payload.x,
+							y: payload.y,
+							width: payload.width ? payload.width : coordinate.width,
+							height: payload.height ? payload.height : coordinate.height,
+							// eslint-disable-next-line no-mixed-spaces-and-tabs
+					  }
+					: coordinate
+			);
 		},
 
 		deleteObject(objectId) {
@@ -968,7 +988,9 @@ export default {
 					? objects.filter((object) => object.id !== objectId)
 					: objects
 			);
-			this.coordinate = null;
+			this.coordinate = this.coordinate.filter(
+				(coordinate) => coordinate.id !== objectId
+			);
 		},
 
 		onMeasure(e, i) {
@@ -1025,9 +1047,9 @@ export default {
 		},
 
 		addSign() {
-			if (this.coordinate && !this.readonly) {
-				this.allObjects = this.allObjects.map(() => []);
-			}
+			// if (this.coordinate && !this.readonly) {
+			// 	this.allObjects = this.allObjects.map(() => []);
+			// }
 			if (!this.isFirstLoad && this.initImageUrls.length && !this.readonly) {
 				this.addImage(this.initImageUrls[0]);
 			}

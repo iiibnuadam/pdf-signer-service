@@ -58,7 +58,6 @@
 		</div>
 		<div
 			class="absolute cursor-pointer transform delete"
-			v-if="noDelete"
 			:style="{ top: '0%', left: '50%' }"
 			@click="onDelete"
 		>
@@ -98,7 +97,6 @@ export default {
 		"y",
 		"pageScale",
 		"fixSize",
-		"noDelete",
 		"readonly",
 	],
 	data() {
