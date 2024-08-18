@@ -75,13 +75,13 @@ export default {
 			window?.parent?.postMessage(
 				{
 					type: "coordinate",
-					coordinate: coordinate.coordinate.map(v => ({
-            x: v.x,
-            y: v.y,
-            page: v.page,
-            width: v.width,
-            height: v.height,
-          })),
+					coordinate: coordinate.coordinate.map((v) => ({
+						x: v.x,
+						y: v.y,
+						page: v.page + 1,
+						width: v.width,
+						height: v.height,
+					})),
 					metadata: coordinate.metadata,
 				},
 				"*"
