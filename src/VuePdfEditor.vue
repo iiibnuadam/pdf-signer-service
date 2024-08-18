@@ -948,7 +948,7 @@ export default {
 
 		selectPage(index) {
 			this.selectedPageIndex = index;
-			this.scrollToPage(index);
+			// this.scrollToPage(index);
 		},
 
 		updateObject(objectId, payload) {
