@@ -50,6 +50,7 @@ export default {
 		this.y = params.get("y") ? Number(params.get("y")) : 0;
 		this.width = params.get("width") ? Number(params.get("width")) : 200;
 		this.height = params.get("height") ? Number(params.get("height")) : 200;
+		this.hideBubuhkan = params.get("hideBubuhkan") === "true";
 
 		params.get("access") === "full"
 			? (this.limitedAccess = false)
@@ -63,6 +64,7 @@ export default {
 			imageUrls: [],
 			limitedAccess: true,
 			readonly: false,
+			hideBubuhkan: false,
 			page: 1,
 			x: 0,
 			y: 0,

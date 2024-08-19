@@ -31,6 +31,7 @@
 							<MenuIcon :size="16" />
 						</button>
 						<button
+							v-if="!hideBubuhkan"
 							class="flex items-center border border-black hover:bg-slate-200 text-black text-sm font-thin py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
 							:class="[
 								pages.length === 0 || saving || !pdfFile
@@ -581,6 +582,10 @@ export default {
 		initialPage: {
 			type: Number,
 			default: 1,
+		},
+		hideBubuhkan: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	data() {
