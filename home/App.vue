@@ -29,6 +29,7 @@
 			:initial-page="page"
 			:x="x"
 			:y="y"
+			:hide-bubuhkan="hideBubuhkan"
 			@onSave2Upload="save2Upload"
 			@setCoodinate="setCoodinate"
 		>
