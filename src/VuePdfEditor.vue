@@ -23,7 +23,7 @@
 					{{ `${pdfName}.pdf` }}
 				</div> -->
 				<div class="flex justify-between items-center h-12 w-full">
-					<div class="flex gap-3 md:gap-4">
+					<div class="flex gap-3 md:gap-4 w-[96px] md:w-[185px]">
 						<button
 							class="flex border border-[#156E5C] hover:bg-slate-100 text-[#156E5C] font-bold p-2 ml-3 md:ml-4 rounded"
 							@click="toggleSidebar = !toggleSidebar"
