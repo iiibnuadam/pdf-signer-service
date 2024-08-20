@@ -611,12 +611,18 @@ export default {
 			isFirstLoad: true,
 			isLoading: false,
 			toggleSidebar: false,
+			pdfHeight: 0,
+			pdfWidth: 0,
 		};
 	},
 	watch: {
 		coordinate(val) {
 			this.$emit("setCoodinate", {
 				coordinate: val,
+				pdfSize: {
+					width: this.pdfWidth,
+					height: this.pdfHeight,
+				},
 				metadata: this.metadata,
 			});
 		},
@@ -810,6 +816,17 @@ export default {
 						.map((_, i) => this.pdfDocument.getPage(i + 1));
 					this.allObjects = this.pages.map(() => []);
 					this.pagesScale = Array(this.numPages).fill(1);
+
+					this.pdfDocument
+						.getPage(1)
+						.then((page) => {
+							const viewport = page.getViewport({ scale: 1 });
+							this.pdfWidth = viewport.width;
+							this.pdfHeight = viewport.height;
+						})
+						.catch((error) => {
+							console.error("Error getting PDF page:", error);
+						});
 
 					const data = {
 						allObjects: this.allObjects,

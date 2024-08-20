@@ -77,12 +77,13 @@ export default {
 	},
 	methods: {
 		setCoodinate(coordinate) {
+			console.log(coordinate);
 			window?.parent?.postMessage(
 				{
 					type: "coordinate",
 					coordinate: coordinate.coordinate.map((v) => ({
 						x: v.x,
-						y: v.y,
+						y: coordinate.pdfSize.height - v.y - v.height,
 						page: v.page + 1,
 						width: v.width,
 						height: v.height,
