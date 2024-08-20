@@ -14,7 +14,7 @@
 			:show-font-size-select="true"
 			:show-font-select="true"
 			:show-rename="true"
-			:show-save-btn="true"
+			:show-save-btn="showSaveBtn"
 			:init-file-src="initFile"
 			:init-file-name="initFileName"
 			:init-text-fields="textFields"
@@ -52,6 +52,7 @@ export default {
 		this.width = params.get("width") ? Number(params.get("width")) : 200;
 		this.height = params.get("height") ? Number(params.get("height")) : 200;
 		this.hideBubuhkan = params.get("hideBubuhkan") === "true";
+		this.showSaveBtn = params.get("showSaveBtn") === "true";
 
 		params.get("access") === "full"
 			? (this.limitedAccess = false)
@@ -66,6 +67,7 @@ export default {
 			limitedAccess: true,
 			readonly: false,
 			hideBubuhkan: false,
+			showSaveBtn: false,
 			page: 1,
 			x: 0,
 			y: 0,
