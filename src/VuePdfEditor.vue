@@ -227,8 +227,8 @@
 								style="display: inline-block"
 								class="relative shadow-lg"
 								:class="[pIndex === selectedPageIndex ? 'shadowOutline' : '']"
-								@mousedown="selectPage(pIndex)"
-								@touchstart="selectPage(pIndex)"
+								@mousedown="selectPageWithScroll(pIndex)"
+								@touchstart="selectPageWithScroll(pIndex)"
 							>
 								<PDFPage
 									:ref="`page${pIndex}`"
@@ -970,7 +970,11 @@ export default {
 
 		selectPage(index) {
 			this.selectedPageIndex = index;
-			// this.scrollToPage(index);
+		},
+
+		selectPageWithScroll(index) {
+			this.selectedPageIndex = index;
+			this.scrollToPage(index);
 		},
 
 		updateObject(objectId, payload) {
