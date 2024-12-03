@@ -34,10 +34,11 @@
 							v-if="!hideBubuhkan"
 							class="flex items-center border border-black hover:bg-slate-200 text-black text-sm font-thin py-1 px-3 md:px-4 mr-3 md:mr-4 rounded"
 							:class="[
-								pages.length === 0 || saving || !pdfFile
+								pages.length === 0 || saving || !pdfFile || isThereSingleSign
 									? 'cursor-not-allowed !bg-slate-200 !hover:!bg-slate-200'
 									: '',
 							]"
+              :disabled="isThereSingleSign"
 							@click="addSign"
 						>
 							<GestureIcon :size="16" class="mr-0 md:mr-2" />
@@ -587,6 +588,10 @@ export default {
 			type: Boolean,
 			default: false,
 		},
+    isSingle: {
+      type: Boolean,
+      default: false,
+    },
 	},
 	data() {
 		return {
@@ -637,7 +642,11 @@ export default {
 	async mounted() {
 		await this.init();
 	},
-	created() {},
+  computed: {
+    isThereSingleSign() {
+      return this.isSingle && this.coordinate.length > 0;
+    },
+  },
 	methods: {
 		wheelZoom(e) {
 			e.stopPropagation();

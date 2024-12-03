@@ -29,6 +29,7 @@
 			:initial-page="page"
 			:x="x"
 			:y="y"
+      :is-single="isSingle"
 			:hide-bubuhkan="hideBubuhkan"
 			@onSave2Upload="save2Upload"
 			@setCoodinate="setCoodinate"
@@ -53,6 +54,7 @@ export default {
 		this.height = params.get("height") ? Number(params.get("height")) : 200;
 		this.hideBubuhkan = params.get("hideBubuhkan") === "true";
 		this.showSaveBtn = params.get("showSaveBtn") === "true";
+    this.isSingle = params.get("isSingle") === "true";
 
 		params.get("access") === "full"
 			? (this.limitedAccess = false)
@@ -73,6 +75,7 @@ export default {
 			y: 0,
 			width: 0,
 			height: 0,
+      isSingle: false,
 		};
 	},
 	methods: {
