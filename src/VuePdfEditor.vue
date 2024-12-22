@@ -38,7 +38,7 @@
 									? 'cursor-not-allowed !bg-slate-200 !hover:!bg-slate-200'
 									: '',
 							]"
-              :disabled="isThereSingleSign"
+							:disabled="isThereSingleSign"
 							@click="addSign"
 						>
 							<GestureIcon :size="16" class="mr-0 md:mr-2" />
@@ -371,7 +371,7 @@
 													:origin-width="object.originWidth"
 													:origin-height="object.originHeight"
 													:page-scale="pagesScale[pIndex]"
-													:fixSize="readonly"
+													:fixSize="readonly || fixSize"
 													:readonly="readonly"
 													@onUpdate="updateObject(object.id, $event)"
 													@onDelete="deleteObject(object.id)"
@@ -588,10 +588,14 @@ export default {
 			type: Boolean,
 			default: false,
 		},
-    isSingle: {
-      type: Boolean,
-      default: false,
-    },
+		isSingle: {
+			type: Boolean,
+			default: false,
+		},
+		fixSize: {
+			type: Boolean,
+			default: true,
+		},
 	},
 	data() {
 		return {
@@ -642,11 +646,11 @@ export default {
 	async mounted() {
 		await this.init();
 	},
-  computed: {
-    isThereSingleSign() {
-      return this.isSingle && this.coordinate.length > 0;
-    },
-  },
+	computed: {
+		isThereSingleSign() {
+			return this.isSingle && this.coordinate.length > 0;
+		},
+	},
 	methods: {
 		wheelZoom(e) {
 			e.stopPropagation();
