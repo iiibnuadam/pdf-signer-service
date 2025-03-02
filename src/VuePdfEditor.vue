@@ -41,7 +41,7 @@
 							:disabled="isThereSingleSign"
 							@click="addSign"
 						>
-							<GestureIcon :size="16" class="mr-0 md:mr-2" />
+							<BubuhkanIcon :size="16" class="mr-0 md:mr-2" />
 							<span class="hidden md:block"> Bubuhkan </span>
 						</button>
 					</div>
@@ -61,7 +61,7 @@
 							:disabled="coordinate && coordinate.page == selectedPageIndex"
 							@click="addSign"
 						>
-							<GestureIcon :size="16" class="mr-0 md:mr-2" />
+							<BubuhkanIcon :size="16" class="mr-0 md:mr-2" />
 							<span class="hidden md:block">
 								{{ coordinate ? "Pindahkan" : "Letakan" }}
 							</span>
@@ -161,7 +161,7 @@
 								]"
 								@click="onAddDrawing"
 							>
-								<GestureIcon :size="16" title="An icon for adding drawing" />
+								<BubuhkanIcon :size="16" title="An icon for adding drawing" />
 							</label>
 						</div>
 						<div
@@ -438,11 +438,11 @@ import {
 import { save } from "./utils/PDF.js";
 import ImageIcon from "vue-material-design-icons/Image.vue";
 import TextIcon from "vue-material-design-icons/Text.vue";
-import GestureIcon from "vue-material-design-icons/Gesture.vue";
 import PencilIcon from "vue-material-design-icons/Pencil.vue";
 import DownloadIcon from "vue-material-design-icons/TrayArrowDown.vue";
 import FileUploadIcon from "vue-material-design-icons/FileUpload.vue";
 import MenuIcon from "vue-material-design-icons/Menu.vue";
+import BubuhkanIcon from "./Components/BubuhkanIcon.vue";
 // import DeleteIcon from "vue-material-design-icons/DeleteOutline.vue";
 
 export default {
@@ -455,7 +455,7 @@ export default {
 		DrawingCanvas,
 		ImageIcon,
 		TextIcon,
-		GestureIcon,
+		BubuhkanIcon,
 		DownloadIcon,
 		PencilIcon,
 		FileUploadIcon,
