@@ -46,7 +46,9 @@ export default {
 		this.imageUrls = params.get("signature") ? [params.get("signature")] : [];
 		this.initFile = params.get("file") || "";
 		this.initFileName = params.get("fileName") || "";
-		this.readonly = params.get("readonly") === "true";
+		this.readonly =
+			params.get("readonly") === "true" ||
+			params.get("hideBubuhkan") === "true";
 		this.page = params.get("page") ? Number(params.get("page")) : 1;
 		this.x = params.get("x") ? Number(params.get("x")) : 0;
 		this.y = params.get("y") ? Number(params.get("y")) : 0;
@@ -80,6 +82,7 @@ export default {
 	},
 	methods: {
 		setCoodinate(coordinate) {
+			console.log(coordinate);
 			window?.parent?.postMessage(
 				{
 					type: "coordinate",

@@ -57,6 +57,7 @@
 			/>
 		</div>
 		<div
+			v-if="!readonly"
 			class="absolute cursor-pointer transform delete"
 			:style="{ top: '0%', left: '50%' }"
 			@click="onDelete"

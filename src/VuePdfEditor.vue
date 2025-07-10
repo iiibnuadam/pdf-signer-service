@@ -25,7 +25,7 @@
 				<div class="flex justify-between items-center h-12 w-full">
 					<div class="flex gap-3 md:gap-4 w-[96px] md:w-[185px]">
 						<button
-							class="flex border border-[#156E5C] hover:bg-slate-100 text-[#156E5C] font-bold p-2 ml-3 md:ml-4 rounded"
+							class="flex items-center justify-center border border-[#156E5C] hover:bg-slate-100 text-[#156E5C] font-bold p-2 ml-3 md:ml-4 rounded"
 							@click="toggleSidebar = !toggleSidebar"
 						>
 							<MenuIcon :size="16" />
@@ -41,8 +41,8 @@
 							:disabled="isThereSingleSign"
 							@click="addSign"
 						>
-							<BubuhkanIcon :size="16" class="mr-0 md:mr-2" />
-							<span class="hidden md:block"> Bubuhkan </span>
+							<PosisikanIcon :size="16" class="mr-0 md:mr-2" />
+							<span class="hidden md:block font-bold"> Posisikan </span>
 						</button>
 					</div>
 					<div class="flex justify-center items-center mx-3 md:mx-4">
@@ -438,11 +438,12 @@ import {
 import { save } from "./utils/PDF.js";
 import ImageIcon from "vue-material-design-icons/Image.vue";
 import TextIcon from "vue-material-design-icons/Text.vue";
+import BubuhkanIcon from "./Components/BubuhkanIcon.vue";
+import PosisikanIcon from "./Components/PosisikanIcon.vue";
 import PencilIcon from "vue-material-design-icons/Pencil.vue";
 import DownloadIcon from "vue-material-design-icons/TrayArrowDown.vue";
 import FileUploadIcon from "vue-material-design-icons/FileUpload.vue";
 import MenuIcon from "vue-material-design-icons/Menu.vue";
-import BubuhkanIcon from "./Components/BubuhkanIcon.vue";
 // import DeleteIcon from "vue-material-design-icons/DeleteOutline.vue";
 
 export default {
@@ -460,6 +461,7 @@ export default {
 		PencilIcon,
 		FileUploadIcon,
 		MenuIcon,
+		PosisikanIcon,
 		// DeleteIcon,
 	},
 	props: {
