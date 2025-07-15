@@ -82,7 +82,6 @@ export default {
 	},
 	methods: {
 		setCoodinate(coordinate) {
-			console.log(coordinate);
 			window?.parent?.postMessage(
 				{
 					type: "coordinate",
@@ -92,6 +91,8 @@ export default {
 						page: v.page + 1,
 						width: v.width,
 						height: v.height,
+						pdfWidth: coordinate.pdfSize.width,
+						pdfHeight: coordinate.pdfSize.height,
 					})),
 					metadata: coordinate.metadata,
 				},

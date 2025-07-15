@@ -1,7 +1,4 @@
 <template>
-	<!--  <div-->
-	<!--      class="absolute left-0 top-0 select-none"-->
-	<!--      :style="{width: `${width + dw}px`,height: `${(height + dh)}px`,transform: `translate(${x + dx}px, ${y + dy}px)`}">-->
 	<div
 		class="absolute left-0 top-0 select-none"
 		:style="{
@@ -11,26 +8,15 @@
 		}"
 	>
 		<div
-			class="absolute w-full h-full cursor-grab"
+			class="absolute w-full h-full"
 			:class="[
 				operation === 'move' ? 'cursor-grabbing' : '',
 				operation ? 'operation' : '',
+				readonly ? 'cursor-default' : 'cursor-grab',
 			]"
 			@mousedown="handlePanStart"
 			@touchstart="handlePanStart"
 		>
-			<!--      <div-->
-			<!--          data-direction="left"-->
-			<!--          class="absolute border-dashed border-gray-600 h-full w-1 left-0 top-0 border-l cursor-ew-resize"/>-->
-			<!--      <div-->
-			<!--          data-direction="top"-->
-			<!--          class="absolute border-dashed border-gray-600 w-full h-1 left-0 top-0 border-t cursor-ns-resize"/>-->
-			<!--      <div-->
-			<!--          data-direction="bottom"-->
-			<!--          class="absolute border-dashed border-gray-600 w-full h-1 left-0 bottom-0 border-b cursor-ns-resize"/>-->
-			<!--      <div-->
-			<!--          data-direction="right"-->
-			<!--          class="absolute border-dashed border-gray-600 h-full w-1 right-0 top-0 border-r cursor-ew-resize"/>-->
 			<div
 				v-if="!fixSize"
 				data-direction="left-top"
@@ -111,6 +97,7 @@ export default {
 			dy: 0,
 			dw: 0,
 			dh: 0,
+			minSize: 50,
 		};
 	},
 	computed: {
@@ -169,19 +156,30 @@ export default {
 				this.dx = _dx;
 				this.dy = _dy;
 			} else if (this.operation === "scale") {
+				let newWidth = this.width;
+				let newHeight = this.height;
+
 				if (this.directions.includes("left")) {
-					this.dx = _dx;
-					this.dw = -_dx;
-				}
-				if (this.directions.includes("top")) {
-					this.dy = _dy;
-					this.dh = -_dy;
+					newWidth = this.width - _dx;
+					newWidth = Math.max(newWidth, this.minSize);
+					this.dw = newWidth - this.width;
+					this.dx = -this.dw;
 				}
 				if (this.directions.includes("right")) {
-					this.dw = _dx;
+					newWidth = this.width + _dx;
+					newWidth = Math.max(newWidth, this.minSize);
+					this.dw = newWidth - this.width;
+				}
+				if (this.directions.includes("top")) {
+					newHeight = this.height - _dy;
+					newHeight = Math.max(newHeight, this.minSize);
+					this.dh = newHeight - this.height;
+					this.dy = -this.dh;
 				}
 				if (this.directions.includes("bottom")) {
-					this.dh = _dy;
+					newHeight = this.height + _dy;
+					newHeight = Math.max(newHeight, this.minSize);
+					this.dh = newHeight - this.height;
 				}
 			}
 		},
@@ -252,11 +250,11 @@ export default {
 }
 
 .selector {
-	border-radius: 10px;
-	width: 12px;
-	height: 12px;
-	margin-left: -6px;
-	margin-top: -6px;
+	border-radius: 6px;
+	width: 8px;
+	height: 8px;
+	margin-left: -4px;
+	margin-top: -4px;
 	background-color: #32b5fe;
 	border: 1px solid #32b5fe;
 }

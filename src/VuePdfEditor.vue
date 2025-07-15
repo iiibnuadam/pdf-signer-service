@@ -371,7 +371,7 @@
 													:origin-width="object.originWidth"
 													:origin-height="object.originHeight"
 													:page-scale="pagesScale[pIndex]"
-													:fixSize="readonly || fixSize"
+													:fixSize="readonly"
 													:readonly="readonly"
 													@onUpdate="updateObject(object.id, $event)"
 													@onDelete="deleteObject(object.id)"
@@ -629,7 +629,11 @@ export default {
 	watch: {
 		coordinate(val) {
 			this.$emit("setCoodinate", {
-				coordinate: val,
+				coordinate: val.map((v) => ({
+					...v,
+					x: !v.x ? this.x : v.x,
+					y: !v.y ? this.y : v.y,
+				})),
 				pdfSize: {
 					width: this.pdfWidth,
 					height: this.pdfHeight,
